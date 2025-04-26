@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # mrl - Module Reload Live
 # Use: run from inside workspace/sources/<recipe-name>/
@@ -13,10 +13,17 @@ fi
 
 # --- Figure out info automatically ---
 RECIPE_NAME="$(basename "$(pwd)")"
-MODULE_NAME="$RECIPE_NAME"
+# --- Extract MODULE_NAME from Makefile ---
+if [ ! -f Makefile ]; then
+    echo "❌ ERROR: Makefile not found!"
+    exit 1
+fi
+
+MODULE_NAME="$(grep 'obj-m' Makefile | awk '{print $3}' | sed 's/\.o//')"
 
 # --- Deploy the module ---
 echo "[1/5] Deploying $RECIPE_NAME to $TARGET_IP ..."
+bitbake "$RECIPE_NAME"
 devtool deploy-target "$RECIPE_NAME" "root@$TARGET_IP"
 if [ $? -ne 0 ]; then
     echo "❌ ERROR: devtool deploy-target failed!"

@@ -6,7 +6,7 @@
 
 static int __init hello_init(void)
 {
-    printk(KERN_INFO "Hello, Kernel World from Rock 5b+!\n");
+    printk(KERN_INFO "Hello, now we can check the module name directly!\n");
     return 0;
 }
 
